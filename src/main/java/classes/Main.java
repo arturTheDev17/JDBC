@@ -45,42 +45,42 @@ public class Main {
 
     public static void main(String[] args) throws SQLException {
 
-        testesCliente( "Saymon" );
-        testesPlanoEContrato( "TudoLiberado+" );
-        testesServicoAdicional( "Raio laser" , "super" );
+//        testesCliente( "Saymon" );
+//        testesPlanoEContrato( "TudoLiberado+" );
+//        testesServicoAdicional( "Raio laser" , "super" );
 
-//        while ( true ) {
-//            System.out.println("""
-//                    ┌———————————————————————————————————————————————————————————————┐
-//                    │ BEM VINDO AO SISTEMA DE GESTÃO DE PLANOS DE OPERADORAS MÓVEIS │
-//                    │ 1. Menu Plano e contrato;                                     │
-//                    │ 2. Menu cliente;                                              │
-//                    │ 3. Menu serviços adicionais;                                  │
-//                    │ 0. Sair;                                                      │
-//                    └———————————————————————————————————————————————————————————————┘
-//                    """ );
-//            switch ( (byte)tryNum() ) {
-//                case 1 : {
-//                    while( acoesPlano() );
-//
-//                } break;
-//                case 2 : {
-//                    while (acoesCliente());
-//                } break;
-//
-//                case 3 : {
-//                    while ( acoesServicoAdicional() );
-//                } break;
-//
-//                case 0 : {
-//                    System.exit( 0 );
-//                }
-//
-//                default : {
-//                    System.out.println( "Escolha não existe..." );
-//                }
-//            }
-//        }
+        while ( true ) {
+            System.out.println("""
+                    ┌———————————————————————————————————————————————————————————————┐
+                    │ BEM VINDO AO SISTEMA DE GESTÃO DE PLANOS DE OPERADORAS MÓVEIS │
+                    │ 1. Menu Plano e contrato;                                     │
+                    │ 2. Menu cliente;                                              │
+                    │ 3. Menu serviços adicionais;                                  │
+                    │ 0. Sair;                                                      │
+                    └———————————————————————————————————————————————————————————————┘
+                    """ );
+            switch ( (byte)tryNum() ) {
+                case 1 : {
+                    while( acoesPlano() );
+
+                } break;
+                case 2 : {
+                    while (acoesCliente());
+                } break;
+
+                case 3 : {
+                    while ( acoesServicoAdicional() );
+                } break;
+
+                case 0 : {
+                    System.exit( 0 );
+                }
+
+                default : {
+                    System.out.println( "Escolha não existe..." );
+                }
+            }
+        }
     }
 
     public static boolean acoesPlano( ) throws SQLException {
@@ -525,22 +525,16 @@ public class Main {
                 new Contrato( "Talvez você terá sinal" , LocalDate.now() ,
                         LocalDate.now( ZoneId.of( "GMT+2" ) ) ) );
 
-
-        try {
-            PlanoCRUD.deletePlano(planoComID2.getId());
-        } catch ( SQLIntegrityConstraintViolationException constraintViolationException ) {
-            PlanoCRUD.deleteContrato(planoComID2.getId());
-            System.err.println("Removendo contrato relacionado ao plano...");
-            PlanoCRUD.deletePlano(planoComID2.getId());
-        }
+        PlanoCRUD.deletePlano(planoComID2.getId());
     }
     public static void testesCliente( String nomeCliente ) throws SQLException {
 
         String email = nomeCliente.toLowerCase() + "@gmail.com";
         Plano plano =
                 new Plano( "aTchIM" , nomeCliente + "'s plan" , 50 , 10 , "ondas eletromagnéticas grátis" , 52.49 );
+        PlanoCRUD.createPlano( plano );
         Cliente cliente =
-                new Cliente( nomeCliente , email , "555-5555" , plano );
+                new Cliente( nomeCliente , email , "555-5555" , PlanoCRUD.readPlano( plano.getNome() ) );
 
         ClienteCRUD.createCliente( cliente );
 
@@ -551,15 +545,10 @@ public class Main {
 
         System.out.println( ClienteCRUD.readCliente( cliente.getNome() ) );
 
-        try {
-            PlanoCRUD.deletePlano(clienteComId.getPlano().getId());
-        } catch ( SQLIntegrityConstraintViolationException constraintViolationException ) {
-            ClienteCRUD.deleteCliente(ClienteCRUD.readCliente(plano.getId()).getId());
-            System.err.println("Removendo cliente relacionado ao plano...");
-            PlanoCRUD.deletePlano(plano.getId());
-        }
+        PlanoCRUD.deletePlano(clienteComId.getPlano().getId());
+
     }
-    public static void testesServicoAdicional( String nomeServico , String nomePlano ) {
+    public static void testesServicoAdicional( String nomeServico , String nomePlano ) throws SQLException {
 
         ServicoAdicionalCRUD.createServicoAdicional(
                 new ServicoAdicional( nomeServico , 550 ) );
@@ -571,6 +560,9 @@ public class Main {
         Plano plano = PlanoCRUD.readPlano( nomePlano );
 
         ServicoAdicionalCRUD.linkServicoAdicionalPlano( plano.getId(), servicoAdicional.getId() );
+
+        PlanoCRUD.deletePlano( plano.getId() );
+        ServicoAdicionalCRUD.deleteServicoAdicional( servicoAdicional.getId() );
     }
 
     private static double tryNum() {

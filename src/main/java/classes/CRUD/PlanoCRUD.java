@@ -201,7 +201,7 @@ public class PlanoCRUD {
             ps.setInt( 1 , id );
             ps.execute();
         } catch ( SQLException e ) {
-            System.err.println( e.getMessage() );
+            throw new SQLException( "deu coisa na constraint" );
         }
     }
 }
