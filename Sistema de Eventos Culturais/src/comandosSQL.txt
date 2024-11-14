@@ -1,0 +1,51 @@
+create database db_eventos_culturais;
+
+use db_eventos_culturais;
+
+create table if not exists tb_eventos (
+    id int primary key not null auto_increment,
+    nome varchar(150) not null,
+    local varchar(150) not null,
+    data DATE not null,
+    descricao varchar(250) not null
+);
+
+create table if not exists tb_participante (
+    id int primary key not null auto_increment,
+    nome varchar(150) not null,
+    email varchar(150) not null unique
+);
+
+create table if not exists tb_inscricao (
+    id int primary key not null auto_increment,
+    idParticipante int not null,
+    idEvento int not null,
+    foreign key ( idParticipante ) references tb_participante (id),
+    foreign key ( idEvento ) references tb_eventos (id)
+
+);
+insert into tb_participante (id, nome, email) VALUES ( 1 , 'jão' , 'gmaildojao@gmail.com' );
+
+insert into tb_inscricao (id, idParticipante, idEvento) VALUES ( 2 , 1 , 1 );
+
+select tb_inscricao.id as inscrição , nome from tb_inscricao left join
+tb_participante tp on tp.id = tb_inscricao.idParticipante
+where nome = 'jão';
+
+insert into tb_eventos (id, nome, local, data, descricao) VALUES ( 1 , 'casa' , 'marte' , '2000-10-10' , 'cosai' );
+
+select * from tb_eventos;
+select * from tb_participante;
+select * from tb_inscricao;
+
+delete
+from tb_eventos
+where nome = 'a';
+
+select * from tb_inscricao left join
+tb_eventos te on te.id = tb_inscricao.idEvento
+where nome = 'compras';
+
+delete
+from tb_participante
+where nome = 'pedro';
