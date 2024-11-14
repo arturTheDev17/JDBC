@@ -10,37 +10,9 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Main {
-    public static void exec(String[] args) {
-//        PlanoCRUD.createPlanoComContrato(
-//                new Plano( "tim" , "pre-pago" , 50 ,
-//                        10 , "zap gratis" , 25.50 ) ,
-//                new Contrato( "da a alma ae" , LocalDate.now() , LocalDate.now())
-//        );
-//        Contrato contrato = PlanoCRUD.readPlanoEcontrato( "pre-pago" );
-//        System.out.println( contrato.getPlano() );
-
-//        PlanoCRUD.createPlano(
-//                new Plano( "tim" , "pre-pago" , 50 ,
-//                        10 , "zap gratis" , 25.50 ) );
-
-
-
-//        System.out.println( plano );
-//
-//        ClienteCRUD.createCliente(
-//                new Cliente( "tagarela" , "falafala@outlook.com" , "555-5555" , plano ));
-//        ClienteCRUD.createCliente(
-//                new Cliente( "tagarela" , "falafala@outlook.com" , "555-5555" , plano ));
-//
-//        Cliente cliente = ClienteCRUD.readCliente( "tagarela" );
-//        System.out.println( cliente );
-
-    }
-
     private static final Scanner sc = new Scanner( System.in );
 
     public static void main(String[] args) throws SQLException {
@@ -50,7 +22,7 @@ public class Main {
 //        testesServicoAdicional( "Raio laser" , "super" );
 
         while ( true ) {
-            System.out.println("""
+            System.out.print("""
                     ┌———————————————————————————————————————————————————————————————┐
                     │ BEM VINDO AO SISTEMA DE GESTÃO DE PLANOS DE OPERADORAS MÓVEIS │
                     │ 1. Menu Plano e contrato;                                     │
@@ -58,7 +30,7 @@ public class Main {
                     │ 3. Menu serviços adicionais;                                  │
                     │ 0. Sair;                                                      │
                     └———————————————————————————————————————————————————————————————┘
-                    """ );
+                    Escolha:""" + " " );
             switch ( (byte)tryNum() ) {
                 case 1 : {
                     while( acoesPlano() );
@@ -84,7 +56,7 @@ public class Main {
     }
 
     public static boolean acoesPlano( ) throws SQLException {
-        System.out.println( """
+        System.out.print( """
                                ┌————————————————————————————————————————————┐
                                │                  MENU PLANO                │
                                │ 1. Criar um plano.                         │
@@ -94,7 +66,7 @@ public class Main {
                                │ 5. Contrato de um plano.                   │
                                │ 0. VOLTAR                                  │
                                └————————————————————————————————————————————┘
-                               """ );
+                               Escolha:""" + " " );
         byte escolha = (byte)tryNum();
 
         switch ( escolha ) {
@@ -104,33 +76,37 @@ public class Main {
             } break;
 
             case 2 : {
-                System.out.println( "TODOS PLANOS:" );
-                System.out.println( toStringPlanos( PlanoCRUD.readAllPlanos() ) );
-                System.out.println( "Insira o nome do plano: " );
-                sc.nextLine();
-                String st = sc.nextLine();
-                Plano plano = null;
+                if ( !PlanoCRUD.readAllPlanos().isEmpty() ) {
+                    System.out.println("TODOS PLANOS:");
+                    System.out.println(toStringPlanos(PlanoCRUD.readAllPlanos()));
+                    System.out.println("Insira o nome do plano: ");
+                    sc.nextLine();
+                    String st = sc.nextLine();
+                    Plano plano = null;
 
-                try {
-                    plano = PlanoCRUD.readPlano( st );
-                    PlanoCRUD.deletePlano( plano.getId() );
-                } catch (RuntimeException e ){
-                    System.err.println( "Esse plano não está registrado!" );
-
-                } catch ( SQLIntegrityConstraintViolationException constraint ) {
-                    System.out.println( "Há ao menos um cliente e/ou um contrato para esse plano! Deseja removê-los? s/N" );
-                    String sim = sc.nextLine();
-
-                    if ( sim.equals( "s" ) || sim.equals( "S" )) {
-                        try {
-                            ClienteCRUD.deleteCliente( ClienteCRUD.readCliente( plano.getId()).getId() );
-                            System.err.println("Removendo cliente relacionado ao plano...");
-                        } catch (RuntimeException e) {
-                            PlanoCRUD.deleteContrato(plano.getId());
-                            System.err.println("Removendo contrato relacionado ao plano...");
-                        }
+                    try {
+                        plano = PlanoCRUD.readPlano(st);
                         PlanoCRUD.deletePlano(plano.getId());
+                    } catch (RuntimeException e) {
+                        System.out.println("Esse plano não está registrado!");
+
+                    } catch (SQLIntegrityConstraintViolationException constraint) {
+                        System.out.println("Há ao menos um cliente e/ou um contrato para esse plano! Deseja removê-los? s/N");
+                        String sim = sc.nextLine();
+
+                        if (sim.equals("s") || sim.equals("S")) {
+                            try {
+                                ClienteCRUD.deleteCliente(ClienteCRUD.readCliente(plano.getId()).getId());
+                                System.out.println("Removendo cliente relacionado ao plano...");
+                            } catch (RuntimeException e) {
+                                PlanoCRUD.deleteContrato(plano.getId());
+                                System.out.println("Removendo contrato relacionado ao plano...");
+                            }
+                            PlanoCRUD.deletePlano(plano.getId());
+                        }
                     }
+                } else {
+                    System.out.println( "Sem planos registrados" );
                 }
             } break;
 
@@ -139,39 +115,46 @@ public class Main {
             } break;
 
             case 4 : {
-                System.out.println( "EDITAR PLANO" );
-                System.out.println( "Insira o nome atual do plano: " );
-                sc.nextLine();
-                String st = sc.nextLine();
+                if ( !PlanoCRUD.readAllPlanos().isEmpty() ) {
+                    System.out.println("EDITAR PLANO");
+                    System.out.println("Insira o nome atual do plano: ");
+                    sc.nextLine();
+                    String st = sc.nextLine();
 
-                try {
-                    Plano antigo = PlanoCRUD.readPlano( st );
-                    System.out.println( antigo );
-                    Plano plano = criaPlano();
-                    plano.setId( antigo.getId() );
-                    PlanoCRUD.updatePlano( plano );
-                    System.out.println( "NOVO PLANO" );
-                    System.out.println( PlanoCRUD.readPlano( plano.getNome() ) );
-                } catch (RuntimeException e ){
-                    System.err.println( "Esse plano não está registrado!" );
+                    try {
+                        Plano antigo = PlanoCRUD.readPlano(st);
+                        System.out.println(antigo);
+                        Plano plano = criaPlano();
+                        plano.setId(antigo.getId());
+                        PlanoCRUD.updatePlano(plano);
+                        System.out.println("NOVO PLANO");
+                        System.out.println(PlanoCRUD.readPlano(plano.getNome()));
+                    } catch (RuntimeException e) {
+                        System.out.println("Esse plano não está registrado!");
+                    }
+                } else {
+                    System.out.println( "Sem planos registrados" );
                 }
             } break;
 
             case 0 : return false;
 
             case 5 : {
-                System.out.println( "TODOS PLANOS:" );
-                System.out.println( toStringPlanos( PlanoCRUD.readAllPlanos() ) );
-                System.out.println( "Insira o nome de um plano para modificar seu contrato: " );
-                sc.nextLine();
-                String st = sc.nextLine();
-                Plano plano = null;
-
-                try {
-                    plano = PlanoCRUD.readPlano( st );
-                    while( acoesContrato( plano ) );
-                } catch (RuntimeException e ) {
-                    System.err.println("Esse plano não está registrado!");
+                if ( !PlanoCRUD.readAllPlanos().isEmpty() ) {
+                    System.out.println("TODOS PLANOS:");
+                    System.out.println(toStringPlanos(PlanoCRUD.readAllPlanos()));
+                    System.out.println("Insira o nome de um plano para modificar seu contrato: ");
+                    sc.nextLine();
+                    String st = sc.nextLine();
+                    Plano plano = null;
+                    try {
+                        plano = PlanoCRUD.readPlano( st );
+                        while( acoesContrato( plano ) );
+                    } catch (RuntimeException e ) {
+                        System.out.println("Esse plano não está registrado!");
+                    }
+                } else {
+                    System.out.println( "Sem planos registrados" );
                 }
             } break;
 
@@ -184,17 +167,17 @@ public class Main {
     }
 
     public static boolean acoesContrato( Plano plano ) {
-        System.out.printf("""
+        System.out.println( "Nome do plano: " + plano.getNome() );
+        System.out.print("""
                 ┌————————————————————————————————————————————┐
                 │              MENU DO CONTRATO              │
-                │ 1. Criar um contrato para um plano.        │
+                │ 1. Criar um contrato para o plano.         │
                 │ 2. Apagar o contrato.                      │
                 │ 3. Ver contrato.                           │
                 │ 4. Editar contrato.                        │
                 │ 0. VOLTAR                                  │
                 └————————————————————————————————————————————┘
-                Plano: %n %s
-                """, plano );
+                Escolha:""" + " " );
         byte escolha = (byte)tryNum();
 
         switch ( escolha ) {
@@ -202,7 +185,7 @@ public class Main {
             try {
                 PlanoCRUD.createContrato( plano , criaContrato() );
             } catch ( RuntimeException e ) {
-                System.err.println( e.getMessage() );
+                System.out.println( e.getMessage() );
             }
             } break;
 
@@ -218,33 +201,29 @@ public class Main {
                         PlanoCRUD.deleteContrato( plano.getId() );
                     }
                 } catch ( RuntimeException e ) {
-                    System.err.println( "Esse plano não está registrado!" );
+                    System.out.println( "Contrato não está registrado!" );
                 }
             } break;
 
             case 3 : {
                 try {
-                    System.out.println( "CONTRATO:" );
                     System.out.println( PlanoCRUD.readPlanoEcontrato( plano.getId() ) );
                 } catch (RuntimeException e ) {
-                    System.err.println("Esse plano não está registrado!");
+                    System.out.println("Contrato não está registrado!");
                 }
             } break;
 
             case 4 : {
-                System.out.println( "EDITAR CONTRATO" );
                 sc.nextLine();
-                String st = sc.nextLine();
                 try {
                     System.out.println( "CONTRATO:" );
                     System.out.println( PlanoCRUD.readPlanoEcontrato( plano.getId() ) );
-                    System.out.println(PlanoCRUD.readPlano( st ));
                     Contrato contrato = criaContrato();
                     PlanoCRUD.updateContrato( contrato );
                     System.out.println( "NOVO CONTRATO" );
                     System.out.println( PlanoCRUD.readPlanoEcontrato( plano.getId() ) );
                 } catch (RuntimeException e ){
-                    System.err.println( "Esse contrato não está registrado!" );
+                    System.out.println( "Esse contrato não está registrado!" );
                 }
             } break;
 
@@ -268,7 +247,7 @@ public class Main {
                                │ 4. Editar um cliente, buscando por nome.   │
                                │ 0. VOLTAR                                  │
                                └————————————————————————————————————————————┘
-                               """ );
+                               Escolha:""" + " " );
         byte escolha = (byte)tryNum();
 
         switch ( escolha ) {
@@ -279,17 +258,21 @@ public class Main {
             } break;
 
             case 2 : {
-                System.out.println( "TODOS CLIENTES:" );
-                System.out.println( toStringCliente( ClienteCRUD.readAllClientes() ) );
-                System.out.println( "Insira o nome do cliente: " );
-                sc.nextLine();
-                String st = sc.nextLine();
-                Cliente cliente = null;
-                try {
-                    cliente = ClienteCRUD.readCliente( st );
-                    ClienteCRUD.deleteCliente( cliente.getId() );
-                } catch (NoSuchElementException e ){
-                    System.err.println( "Esse cliente não está registrado!" );
+                if ( !ClienteCRUD.readAllClientes().isEmpty() ) {
+                    System.out.println("TODOS CLIENTES:");
+                    System.out.println(toStringCliente(ClienteCRUD.readAllClientes()));
+                    System.out.println("Insira o nome do cliente: ");
+                    sc.nextLine();
+                    String st = sc.nextLine();
+                    Cliente cliente;
+                    try {
+                        cliente = ClienteCRUD.readCliente(st);
+                        ClienteCRUD.deleteCliente(cliente.getId());
+                    } catch (RuntimeException e) {
+                        System.out.println("Esse cliente não está registrado!");
+                    }
+                } else {
+                    System.out.println( "Não há clientes registrados." );
                 }
             } break;
 
@@ -298,15 +281,19 @@ public class Main {
             } break;
 
             case 4 : {
-                System.out.println( "EDITAR CLIENTE" );
-                System.out.println( "Insira o nome do cliente: " );
-                sc.nextLine();
-                String st = sc.nextLine();
+                if ( !ClienteCRUD.readAllClientes().isEmpty() ) {
+                    System.out.println( "EDITAR CLIENTE" );
+                    System.out.println( "Insira o nome do cliente: " );
+                    sc.nextLine();
+                    String st = sc.nextLine();
 
-                try {
-                    System.out.println( ClienteCRUD.readCliente( st ) );
-                } catch (NoSuchElementException e ){
-                    System.err.println( "Esse cliente não está registrado!" );
+                    try {
+                        System.out.println( ClienteCRUD.readCliente( st ) );
+                    } catch (RuntimeException e ){
+                        System.out.println( "Esse cliente não está registrado!" );
+                    }
+                } else {
+                    System.out.println( "Não há clientes registrados." );
                 }
             } break;
 
@@ -331,7 +318,8 @@ public class Main {
                                │ 5. Remover um serviço adicional de um plano.      │
                                │ 0. VOLTAR                                         │
                                └———————————————————————————————————————————————————┘
-                               """ );
+                               Escolha:""" + " " );
+
         byte escolha = (byte)tryNum();
 
         switch ( escolha ) {
@@ -340,19 +328,20 @@ public class Main {
             } break;
 
             case 2 : {
-                System.out.println( "TODOS SERVIÇOS ADICIONAIS:" );
-                System.out.println( toStringServicosAdicionais( ServicoAdicionalCRUD.readAllServicosAdicionais() ) );
-
                 if ( !ServicoAdicionalCRUD.readAllServicosAdicionais().isEmpty() ) {
+                    System.out.println( "TODOS SERVIÇOS ADICIONAIS:" );
+                    System.out.println( toStringServicosAdicionais( ServicoAdicionalCRUD.readAllServicosAdicionais() ) );
                     System.out.println( "Insira o id da serviço adicional: " );
 
                     int id = (int)tryNum();
 
                     try {
                         ServicoAdicionalCRUD.deleteServicoAdicional( id );
-                    } catch (NoSuchElementException e ){
-                        System.err.println( "Essa serviço adicional não existe!" );
+                    } catch (RuntimeException e ){
+                        System.out.println( "Essa serviço adicional não existe!" );
                     }
+                } else {
+                    System.out.println( "Não há serviços adicionais registrados." );
                 }
             } break;
 
@@ -365,7 +354,7 @@ public class Main {
                 ArrayList<ServicoAdicional> servicosAdicionais = ServicoAdicionalCRUD.readAllServicosAdicionais();
 
                 if ( plano.isEmpty() || servicosAdicionais.isEmpty() ) {
-                    System.err.printf("""
+                    System.out.printf("""
                             ATENÇÃO, Há um total de:
                             %d serviços adicionais(s) e
                             %d plano(s) cadastrado(s)...
@@ -392,7 +381,7 @@ public class Main {
                         }
 
                     } catch (RuntimeException e) {
-                        System.err.println("Plano ou serviço adicional não encontrado.");
+                        System.out.println("Plano ou serviço adicional não encontrado.");
                     }
 
                 }
@@ -478,12 +467,12 @@ public class Main {
     }
 
 
-    private static String toStringPlanos(ArrayList<Plano> eventos ) {
+    private static String toStringPlanos(ArrayList<Plano> planos ) {
         StringBuilder string = new StringBuilder();
-        for ( Plano evento : eventos ) {
-            string.append(evento);
+        for ( Plano plano : planos ) {
+            string.append(plano + "\n" );
         }
-        return (eventos.isEmpty()) ? "Nenhum evento cadastrado" : string.toString();
+        return (planos.isEmpty()) ? "Nenhum plano cadastrado" : string.toString();
     }
     private static String toStringCliente( ArrayList<Cliente> clientes ) {
         StringBuilder string = new StringBuilder();

@@ -97,9 +97,7 @@ public class Plano {
                 Quantidade de dados:  %.1f GB
                 Quantidade de dados 'bônus': %.1f GB
                 Benefícios: %s
-                Valor: R$%.2f
-
-                """.formatted( id , operadora , nome , quantidade_dados ,
+                Valor: R$%.2f""".formatted( id , operadora , nome , quantidade_dados ,
                 quantidade_dados_bonus , beneficios , valor );
     }
 }

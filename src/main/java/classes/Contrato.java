@@ -67,16 +67,15 @@ public class Contrato {
                 Termos: %s
                 Data de início: %s/%d/%d
                 Data de fim: %s/%d/%d
-                Plano do contrato: %s
-                """.formatted(
+                Plano do contrato: %s""".formatted(
                         this.id,
-                this.termos,
-                this.data_inicio.getMonth().getValue(),
-                this.data_inicio.getDayOfMonth(),
-                this.data_inicio.getYear(),
-                this.data_fim.getMonth().getValue(),
-                this.data_fim.getDayOfMonth(),
-                this.data_fim.getYear(),
-                this.plano.toString());
+                        this.termos,
+                        this.data_inicio.getMonth().getValue(),
+                        this.data_inicio.getDayOfMonth(),
+                        this.data_inicio.getYear(),
+                        this.data_fim.getMonth().getValue(),
+                        this.data_fim.getDayOfMonth(),
+                        this.data_fim.getYear(),
+                        this.plano.toString());
     }
 }
