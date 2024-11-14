@@ -99,6 +99,7 @@ public class Main {
 
         switch ( escolha ) {
             case 1 : {
+                sc.nextLine();
                 PlanoCRUD.createPlano( criaPlano() );
             } break;
 
@@ -144,8 +145,10 @@ public class Main {
                 String st = sc.nextLine();
 
                 try {
-                    System.out.println(PlanoCRUD.readPlano( st ));
+                    Plano antigo = PlanoCRUD.readPlano( st );
+                    System.out.println( antigo );
                     Plano plano = criaPlano();
+                    plano.setId( antigo.getId() );
                     PlanoCRUD.updatePlano( plano );
                     System.out.println( "NOVO PLANO" );
                     System.out.println( PlanoCRUD.readPlano( plano.getNome() ) );
@@ -190,8 +193,8 @@ public class Main {
                 │ 4. Editar contrato.                        │
                 │ 0. VOLTAR                                  │
                 └————————————————————————————————————————————┘
-                Plano: %s
-                %n""", plano );
+                Plano: %n %s
+                """, plano );
         byte escolha = (byte)tryNum();
 
         switch ( escolha ) {
@@ -421,7 +424,6 @@ public class Main {
     }
 
     private static Plano criaPlano() {
-        sc.nextLine();
         System.out.print( "Insira o nome da operadora deste plano: " );
         String operadora = sc.nextLine();
         System.out.print( "Insira o nome do plano: " );
@@ -430,6 +432,7 @@ public class Main {
         double quantidade_dados = tryNum();
         System.out.print( "Insira a quantidade de dados de bônus (GB): " );
         double quantidade_dados_bonus = tryNum();
+        sc.nextLine();
         System.out.print( "Insira os benefícios do plano: " );
         String beneficios = sc.nextLine();
         System.out.print( "Insira o valor do plano em reais: R$ " );
@@ -442,8 +445,7 @@ public class Main {
         sc.nextLine();
         System.out.print( "Insira os termos do contrato: " );
         String termos = sc.nextLine();
-        System.out.print( "Insira o local do evento: " );
-        String local = sc.nextLine();
+
 
         System.out.print( "Insira o dia de início do contrato: " );
         byte diaInicio = (byte)tryNum();
@@ -460,7 +462,7 @@ public class Main {
         byte mesFinal = (byte)tryNum();
         System.out.print( "Insira o ano de final do contrato: " );
         int anoFinal = (int)tryNum();
-        LocalDate dataFinal = LocalDate.of( anoInicio , mesInicio , diaInicio );
+        LocalDate dataFinal = LocalDate.of( anoFinal , mesFinal , diaFinal );
 
         return new Contrato( termos , dataInicio , dataFinal );
     }
