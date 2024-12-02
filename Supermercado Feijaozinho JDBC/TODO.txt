@@ -1,0 +1,36 @@
+1. Sistema de Avaliação de Produtos
+Descrição: Permitir que os clientes avaliem os produtos após a compra.
+Implementação: Adicionar um método para coletar e armazenar avaliações (estrelinhas ou comentários) para cada produto.
+2. Histórico de Compras
+Descrição: Manter um registro das compras feitas pelos clientes.
+Implementação: Adicionar um método que armazene os detalhes das compras (produtos, quantidades, data) e permita que o usuário veja seu histórico.
+3. Funcionalidade de Busca Avançada
+Descrição: Permitir aos usuários buscar produtos por preço, nome ou categoria.
+Implementação: Criar um método de busca que aceita parâmetros diferentes e exibe os resultados filtrados.
+4. Descontos e Promoções
+Descrição: Implementar uma funcionalidade de descontos em produtos ou promoções de categoria.
+Implementação: Criar um método para aplicar descontos e uma forma de informá-los aos usuários.
+5. Sistema de Recomendação
+Descrição: Sugerir produtos com base nas compras anteriores do cliente.
+Implementação: Analisar o histórico de compras e mostrar sugestões relevantes ao cliente quando ele acessar a loja.
+6. Carrinho de Compras Persistente
+Descrição: Salvar o carrinho de compras entre sessões.
+Implementação: Permitir que o carrinho do cliente seja salvo e recuperado quando ele voltar, facilitando a continuidade das compras.
+7. Notificações de Novos Produtos
+Descrição: Notificar os usuários sobre novos produtos ou promoções por e-mail.
+Implementação: Integrar uma funcionalidade de envio de e-mails e permitir que os usuários se inscrevam para receber notificações.
+8. Sistema de Pagamento
+Descrição: Integrar um sistema de pagamento online (simulado ou real).
+Implementação: Criar métodos para simular pagamentos com diferentes métodos (cartão, PayPal, etc.) e gerar recibos.
+9. Gerenciamento de Estoque
+Descrição: Permitir que o administrador visualize e gerencie o estoque dos produtos.
+Implementação: Criar relatórios que mostrem produtos com baixo estoque e que precisam ser reabastecidos.
+10. Feedback do Usuário
+Descrição: Criar um sistema onde os usuários possam deixar feedback sobre a experiência de compra.
+Implementação: Permitir que os usuários enviem comentários sobre o que gostaram ou o que pode ser melhorado no sistema.
+11. Funcionalidade de Lista de Desejos
+Descrição: Permitir que os clientes salvem produtos que desejam comprar no futuro.
+Implementação: Adicionar uma opção para adicionar produtos à lista de desejos e visualizar essa lista posteriormente.
+12. Modo Noturno
+Descrição: Implementar uma opção de modo noturno para uma melhor experiência de usuário.
+Implementação: Adicionar uma configuração que altere o tema do aplicativo.
